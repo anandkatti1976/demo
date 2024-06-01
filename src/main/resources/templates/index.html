@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head xmlns:th="http://www.thymeleaf.org">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Okta Sign-In</title>
+    <link href="https://global.oktacdn.com/okta-signin-widget/5.7.2/css/okta-sign-in.min.css" rel="stylesheet">
+    <link href="https://global.oktacdn.com/okta-signin-widget/5.7.2/css/okta-theme.css" rel="stylesheet">
+    <style>
+        .custom-header, .custom-footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #f8f8f8;
+        }
+        .custom-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .custom-footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-container"></div>
+    <div id="okta-signin-container"></div>
+    <div id="footer-container"></div>
+
+    <script src="https://global.oktacdn.com/okta-signin-widget/5.7.2/js/okta-sign-in.min.js"></script>
+    <script th:inline="javascript">
+        function loadHTML(url, elementId) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById(elementId).innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send();
+        }
+
+        // Load header and footer
+        loadHTML('header.html', 'header-container');
+        loadHTML('footer.html', 'footer-container');
+        
+        var oauth2State = /*[[${oauth2_state}]]*/;
+
+        var oktaSignIn = new OktaSignIn({
+            baseUrl: "https://dev-09614572.okta.com",
+            clientId: "0oahft58vrQtMnTDw5d7",
+            redirectUri: "http://localhost:8080/callback/",
+            authParams: {
+                issuer: "https://dev-09614572.okta.com/oauth2/default",
+                responseType: 'code',
+                scopes: ['openid','profile', 'email'],
+                state: oauth2State,
+                pkce: false
+            },
+            features: {
+                // Enable registration feature if required
+                registration: true, 
+                // Other features can be enabled here
+            } 
+        });
+
+        oktaSignIn.renderEl(
+            { el: '#okta-signin-container' },
+            function success(res) {
+                if (res.status === 'SUCCESS') {
+                    console.log('User successfully authenticated', res);
+                }
+            },
+            function error(err) {
+                console.error('Sign-In Widget error: ', err);
+            }
+        );
+
+    </script>
+</body>
+</html>
