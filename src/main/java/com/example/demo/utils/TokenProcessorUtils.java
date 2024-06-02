@@ -52,7 +52,7 @@ public class TokenProcessorUtils {
         headers.add("Content-Type", "application/x-www-form-urlencoded");
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("grant_type", "authorization_code");
+        body.add("grant_type", Constants.AUTHORIZATION_CODE);
         body.add("code", authCode);
         body.add("redirect_uri", oktaConfig.getRedirectUri());
 

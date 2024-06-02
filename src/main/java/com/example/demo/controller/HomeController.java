@@ -27,6 +27,7 @@ import java.math.BigInteger;
 
 import com.example.demo.VO.OktaConfigurationVO;
 import com.example.demo.VO.OktaTokensVO;
+import com.example.demo.utils.Constants;
 import com.example.demo.utils.TokenProcessorUtils;
 
 @Controller
@@ -58,8 +59,8 @@ public class HomeController {
         
         String state = utils.generateStateValue();
         
-        model.addAttribute("oauth2_state", state);
-        session.setAttribute("oauth2_state", state);
+        model.addAttribute(Constants.OAUTH2_STATE, state);
+        session.setAttribute(Constants.OAUTH2_STATE, state);
 
         return "index";
     }
@@ -71,7 +72,7 @@ public class HomeController {
                             Model model) {
 
          // Retrieve the stored state
-         String storedState = (String) session.getAttribute("oauth2_state");
+         String storedState = (String) session.getAttribute(Constants.OAUTH2_STATE);
 
          // state parameter ensure that the endpoint cannot be called directly and 
          // avoidd CSRF
@@ -98,22 +99,24 @@ public class HomeController {
             throw new RuntimeException("Invalid ID token");
         }
 
-        session.setAttribute("accessToken", tokens.getAccessToken());
-        session.setAttribute("idToken", tokens.getIdToken());
+        session.setAttribute(Constants.ACCESS_TOKEN, tokens.getAccessToken());
+        session.setAttribute(Constants.ID_TOKEN, tokens.getIdToken());
         
-        model.addAttribute("accessToken", tokens.getAccessToken());
-        model.addAttribute("idToken", tokens.getIdToken());
+        model.addAttribute(Constants.ACCESS_TOKEN, tokens.getAccessToken());
+        model.addAttribute(Constants.ID_TOKEN, tokens.getIdToken());
 
         return "home";
     }
 
     @GetMapping("/secure/endpoint")
     public String secureEndpoint(HttpSession session, Model model) {
-        String accessToken = (String) session.getAttribute("accessToken");
+        
+        String accessToken = (String) session.getAttribute(Constants.ACCESS_TOKEN);
         if (accessToken == null) {
             return "redirect:/";
         }
-        model.addAttribute("accessToken", accessToken);
+         
+        model.addAttribute(Constants.ACCESS_TOKEN, session.getAttribute(Constants.ACCESS_TOKEN));
         return "secure";
     }
 
