@@ -54,6 +54,14 @@ public class HomeController {
 
     private TokenProcessorUtils utils = new TokenProcessorUtils();
 
+    /**
+     * Generates the random state value to be used in the request
+     * This ensures the /callback endpoint is not called in isolation. Also helps avoid CSRF. 
+     * 
+     * @param session
+     * @param model
+     * @return String - index.html
+     */
     @GetMapping("/")
     public String home(HttpSession session, Model model) {
         
@@ -64,6 +72,18 @@ public class HomeController {
 
         return "index";
     }
+
+    
+    /**
+     * Endpoint for redirect URI parameter configure for the OKTA application. Ensure to import
+     * Okta base certificate into cacert to make HTTPS Calls to Okta
+     * 
+     * @param code
+     * @param state
+     * @param session
+     * @param model
+     * @return String - home.html
+     */
 
     @GetMapping("/callback")
     public String callback(@RequestParam("code") String code, 
@@ -108,6 +128,26 @@ public class HomeController {
         return "home";
     }
 
+    /**
+     * Secure endpoint that requires an access token to be present in the session
+     * 
+     * @param session
+     * @param model
+     * @return String - secure.html
+     */
+    @GetMapping("/vis")
+    public String visEndpoint(HttpSession session, Model model) {
+        
+        String accessToken = (String) session.getAttribute(Constants.ACCESS_TOKEN);
+        if (accessToken == null) {
+            return "redirect:/";
+        }
+         
+        model.addAttribute(Constants.ACCESS_TOKEN, session.getAttribute(Constants.ACCESS_TOKEN));
+        model.addAttribute(Constants.ID_TOKEN, session.getAttribute(Constants.ID_TOKEN));
+        return "vis";
+    }
+
     @GetMapping("/secure/endpoint")
     public String secureEndpoint(HttpSession session, Model model) {
         
@@ -117,7 +157,9 @@ public class HomeController {
         }
          
         model.addAttribute(Constants.ACCESS_TOKEN, session.getAttribute(Constants.ACCESS_TOKEN));
+        model.addAttribute(Constants.ID_TOKEN, session.getAttribute(Constants.ID_TOKEN));
         return "secure";
     }
+
 
 }
