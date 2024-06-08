@@ -1,29 +1,12 @@
 package com.example.demo.controller;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 
-import com.okta.jwt.Jwt;
-import com.okta.jwt.JwtVerifiers;
-import com.okta.jwt.AccessTokenVerifier;
-import com.okta.jwt.IdTokenVerifier;
-
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import java.security.SecureRandom;
 import javax.servlet.http.HttpSession;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Map;
-import java.math.BigInteger;
 
 import com.example.demo.VO.OktaConfigurationVO;
 import com.example.demo.VO.OktaTokensVO;

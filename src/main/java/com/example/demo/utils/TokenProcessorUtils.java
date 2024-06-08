@@ -88,6 +88,7 @@ public class TokenProcessorUtils {
                     .build();                    
                     
             Jwt accessJwt = jwtVerifier.decode(oktaTokensVO.getAccessToken());
+            System.out.println(" Claims -> " + accessJwt.getClaims());
 
             // Tokens are valid
             return true;
